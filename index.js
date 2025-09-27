@@ -1,29 +1,18 @@
-import express from "express";
-import cors from "cors";  // ✅ IMPORTA CORS
-import jwt from "jsonwebtoken";
+const express = require("express");
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 app.use(express.json());
-app.use(cors()); // ✅ HABILITA CORS
+app.use(cors()); // habilita CORS
 
-const SECRET_KEY = "secreto123"; // o tu clave JWT
-const PORT = process.env.PORT || 4000; // ✅ PUERTO DINÁMICO
+const SECRET_KEY = "secreto123";
+const PORT = process.env.PORT || 4000; // puerto dinámico
 
-import express from "express";
-import cors from "cors";
-import jwt from "jsonwebtoken";
-
-const app = express();
-app.use(express.json()); // ✅ Para leer JSON
-app.use(cors());         // ✅ Habilita CORS
-
-const SECRET_KEY = "secreto123"; // 🔑 Tu clave JWT
-const PORT = process.env.PORT || 4000; // 🔁 Puerto dinámico para Render
-
-// "Base de datos" temporal en memoria
+// "Base de datos" en memoria
 const users = [];
 
-// 🔹 Registro
+// Registro
 app.post("/api/register", (req, res) => {
   const { username, password } = req.body;
   if (users.find((u) => u.username === username)) {
@@ -33,7 +22,7 @@ app.post("/api/register", (req, res) => {
   res.json({ message: "Registrado correctamente" });
 });
 
-// 🔹 Login
+// Login
 app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
   const user = users.find(
@@ -46,20 +35,6 @@ app.post("/api/login", (req, res) => {
   res.json({ token });
 });
 
-// 🔹 Endpoint de prueba
-app.get("/", (req, res) => {
-  res.send("Servidor funcionando correctamente 🚀");
-});
-
-// 🔹 Iniciar servidor
 app.listen(PORT, () =>
   console.log('✅ Backend corriendo en http://localhost:${PORT}')
 );
-
-// Endpoint de chatbot (respuesta automática simulada)
-app.post('/api/chat', auth, (req, res) => {
-  const { message } = req.body;
-  res.json({ reply: `Hola ${req.user.username}, me preguntaste: "${message}". ¡Esta es una respuesta automática de IA!` });
-});
-
-app.listen(PORT, () => console.log(`Backend corriendo en http://localhost:${PORT}`));
