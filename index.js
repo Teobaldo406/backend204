@@ -1,11 +1,13 @@
-const express = require('express');
-const cors = require('cors');
-const jwt = require('jsonwebtoken');
-const bodyParser = require('body-parser');
+import express from "express";
+import cors from "cors";  // ✅ IMPORTA CORS
+import jwt from "jsonwebtoken";
 
 const app = express();
-const SECRET_KEY = 'supersecreto';
-const PORT = 4000;
+app.use(express.json());
+app.use(cors()); // ✅ HABILITA CORS
+
+const SECRET_KEY = "secreto123"; // o tu clave JWT
+const PORT = process.env.PORT || 4000; // ✅ PUERTO DINÁMICO
 
 // "Base de datos" en memoria
 const users = [];
