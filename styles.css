@@ -1,0 +1,65 @@
+.inicio-glass {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 28px 20px;
+  max-inline-size: 320px;
+  margin: 60px auto 20px auto;
+  color: #222;
+  text-align: center;
+}
+
+.menu-window {
+  background: #f7f9fb;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px 0 rgba(31, 38, 135, 0.10);
+  padding: 18px 12px;
+  max-inline-size: 340px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.btn-3d {
+  background: linear-gradient(90deg, #3498db 0%, #6dd5fa 100%);
+  color: #fff;
+  border: none;
+  padding: 15px 30px;
+  font-size: 18px;
+  border-radius: 8px;
+  box-shadow: 0 6px 0 #217dbb, 0 8px 15px rgba(0,0,0,0.2);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+  cursor: pointer;
+  font-weight: bold;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-3d::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: -50%;
+  inset-block-start: -50%;
+  inline-size: 200%;
+  block-size: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-3d:hover {
+  background: linear-gradient(90deg, #6dd5fa 0%, #3498db 100%);
+  transform: scale(1.07);
+  box-shadow: 0 10px 20px rgba(52,152,219,0.3), 0 6px 0 #217dbb;
+}
+
+.btn-3d:hover::after {
+  opacity: 1;
+}
+
+.btn-3d:active {
+  box-shadow: 0 2px 0 #217dbb, 0 4px 8px rgba(0,0,0,0.2);
+  transform: scale(0.97) translateY(4px);
+}
