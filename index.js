@@ -1,3 +1,9 @@
+require('dotenv').config();
+// OpenAI setup
+const { Configuration, OpenAIApi } = require("openai");
+const openai = new OpenAIApi(new Configuration({
+  apiKey: process.env.OPENAI_API_KEY
+}));
 const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
@@ -38,27 +44,24 @@ app.post("/api/login", (req, res) => {
 // Chatbot simple
 app.post("/api/chat", (req, res) => {
   const { message } = req.body;
-  let reply = "No entendí tu pregunta.";
   if (!message) {
     return res.status(400).json({ reply: "No enviaste ningún mensaje." });
   }
-  const msg = message.toLowerCase();
-  if (msg.includes("hora")) {
-    reply = `La hora actual es ${new Date().toLocaleTimeString()}`;
-  } else if (msg.includes("nombre")) {
-    reply = "Mi nombre es Erudito_IA.";
-  } else if (msg.includes("hola")) {
-    reply = "¡Hola! ¿En qué puedo ayudarte?";
-  } else if (msg.includes("dominio")) {
-    reply = "Mi dominio es Erudito, especializado en inteligencia artificial y asistencia educativa.";
-  } else if (msg.includes("especialidad")) {
-    reply = "Mi especialidad es ayudar con temas de educación y tecnología.";
-  } else if (msg.includes("servicios")) {
-    reply = "Ofrezco asistencia en tareas, explicaciones y consultas sobre tecnología y educación.";
-  } else if (msg.includes("ia") || msg.includes("inteligencia artificial")) {
-    reply = "La inteligencia artificial (IA) es la capacidad de una máquina para imitar la inteligencia humana. ¿Quieres saber más sobre IA?";
-  }
-  res.json({ reply });
+  (async () => {
+    try {
+      const completion = await openai.createChatCompletion({
+        model: "gpt-4",
+        messages: [
+          { role: "system", content: "Eres Erudito_IA, un asistente experto en educación y tecnología." },
+          { role: "user", content: message }
+        ]
+      });
+      const reply = completion.data.choices[0].message.content;
+      res.json({ reply });
+    } catch (err) {
+      res.json({ reply: "Error al conectar con OpenAI: " + err.message });
+    }
+  })();
 });
 
 app.listen(PORT, () =>
