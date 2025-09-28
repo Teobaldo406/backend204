@@ -1,9 +1,9 @@
 require('dotenv').config();
-// OpenAI setup
-const { Configuration, OpenAIApi } = require("openai");
-const openai = new OpenAIApi(new Configuration({
+// OpenAI setup (versión 4.x o superior)
+const OpenAI = require("openai");
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
-}));
+});
 const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
