@@ -49,14 +49,14 @@ app.post("/api/chat", (req, res) => {
   }
   (async () => {
     try {
-      const completion = await openai.createChatCompletion({
+      const completion = await openai.chat.completions.create({
         model: "gpt-4",
         messages: [
           { role: "system", content: "Eres Erudito_IA, un asistente experto en educación y tecnología." },
           { role: "user", content: message }
         ]
       });
-      const reply = completion.data.choices[0].message.content;
+      const reply = completion.choices[0].message.content;
       res.json({ reply });
     } catch (err) {
       res.json({ reply: "Error al conectar con OpenAI: " + err.message });
