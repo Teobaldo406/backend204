@@ -1,3 +1,4 @@
+//carga varialbles de entorno
 require('dotenv').config();
 // OpenAI setup (versión 4.x o superior)
 const OpenAI = require("openai");
@@ -7,6 +8,13 @@ const openai = new OpenAI({
 const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
+const mongoose = require('mongoose'); // 🔹 Importamos mongoose
+const User = require("./models/user"); // Importamos el modelo User
+
+// 🔹 Conectamos a MongoDB Atlas
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ Conectado a MongoDB Atlas"))
+  .catch((err) => console.error("❌ Error al conectar con MongoDB:", err));
 
 const app = express();
 app.use(express.json());
@@ -15,30 +23,44 @@ app.use(cors()); // habilita CORS
 const SECRET_KEY = "secreto123";
 const PORT = process.env.PORT || 4000; // puerto dinámico
 
-// "Base de datos" en memoria
-const users = [];
-
 // Registro
-app.post("/api/register", (req, res) => {
-  const { username, password } = req.body;
-  if (users.find((u) => u.username === username)) {
-    return res.status(400).json({ message: "Usuario ya existe" });
-  }
-  users.push({ username, password });
-  res.json({ message: "Registrado correctamente" });
+app.post("/api/register", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    // Verificar si el usuario ya existe
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ message: "Usuario ya existe" });
+    }
+
+    // Crear nuevo usuario
+    const newUser = new User({ username, password });
+    await newUser.save();
+
+    res.json({ message: "Registrado correctamente" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error en el servidor" });
+  }
 });
 
 // Login
-app.post("/api/login", (req, res) => {
-  const { username, password } = req.body;
-  const user = users.find(
-    (u) => u.username === username && u.password === password
-  );
-  if (!user) {
-    return res.status(401).json({ message: "Credenciales inválidas" });
-  }
-  const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: "1h" });
-  res.json({ token });
+app.post("/api/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username });
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: "Credenciales inválidas" });
+    }
+
+    const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: "1h" });
+    res.json({ token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error en el servidor" });
+  }
 });
 
 // Chatbot simple
